@@ -5,7 +5,7 @@ resource "aws_eks_node_group" "eksnode" {
   node_group_name = "eksnodegroup"
   node_role_arn   = aws_iam_role.eksnoderole.arn
   instance_types  = ["t2.large"]
-  subnet_ids      = ["subnet-00e4bc5024c87a9c9", "subnet-0a87273729a388447"]
+  subnet_ids      = ["subnet-09dd0886d97cbfbeb", "subnet-0263efb726a0baa2e"]
 
 
   tags = {
