@@ -66,6 +66,7 @@ metadata:
   namespace: sock-shop
 spec:
   ports:
+  - name: metrics
     # the port that this service should serve on
   - port: 80
     targetPort: 80
@@ -196,6 +197,7 @@ metadata:
   namespace: sock-shop
 spec:
   ports:
+  - name: metrics
     # the port that this service should serve on
   - port: 80
     targetPort: 80
@@ -312,6 +314,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
+  - name: metrics
   - port: 80
     targetPort: 8079
     nodePort: 30001
@@ -380,6 +383,7 @@ metadata:
   namespace: sock-shop
 spec:
   ports:
+  - name: metrics
     # the port that this service should serve on
   - port: 80
     targetPort: 80
@@ -749,6 +753,7 @@ metadata:
   namespace: sock-shop
 spec:
   ports:
+  - name: metrics
     # the port that this service should serve on
   - port: 80
     targetPort: 80
@@ -823,6 +828,7 @@ metadata:
   namespace: sock-shop
 spec:
   ports:
+  - name: metrics
     # the port that this service should serve on
   - port: 80
     targetPort: 80
