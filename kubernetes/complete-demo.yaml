@@ -22,32 +22,32 @@ spec:
         name: carts
     spec:
       containers:
-      - name: carts
-        image: weaveworksdemos/carts:0.4.8
-        env:
-         - name: JAVA_OPTS
-           value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
-        resources:
-          limits:
-            cpu: 300m
-            memory: 500Mi
-          requests:
-            cpu: 100m
-            memory: 200Mi
-        ports:
-        - containerPort: 80
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
-        volumeMounts:
-        - mountPath: /tmp
-          name: tmp-volume
+        - name: carts
+          image: weaveworksdemos/carts:0.4.8
+          env:
+            - name: JAVA_OPTS
+              value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
+          resources:
+            limits:
+              cpu: 300m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+          ports:
+            - containerPort: 80
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            capabilities:
+              drop:
+                - all
+              add:
+                - NET_BIND_SERVICE
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
       volumes:
         - name: tmp-volume
           emptyDir:
@@ -60,16 +60,15 @@ kind: Service
 metadata:
   name: carts
   annotations:
-        prometheus.io/scrape: 'true'
+    prometheus.io/scrape: "true"
   labels:
     name: carts
   namespace: sock-shop
 spec:
   ports:
-  - name: metrics
     # the port that this service should serve on
-  - port: 80
-    targetPort: 80
+    - port: 80
+      targetPort: 80
   selector:
     name: carts
 ---
@@ -91,23 +90,23 @@ spec:
         name: carts-db
     spec:
       containers:
-      - name: carts-db
-        image: mongo
-        ports:
-        - name: mongo
-          containerPort: 27017
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-          readOnlyRootFilesystem: true
-        volumeMounts:
-        - mountPath: /tmp
-          name: tmp-volume
+        - name: carts-db
+          image: mongo
+          ports:
+            - name: mongo
+              containerPort: 27017
+          securityContext:
+            capabilities:
+              drop:
+                - all
+              add:
+                - CHOWN
+                - SETGID
+                - SETUID
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
       volumes:
         - name: tmp-volume
           emptyDir:
@@ -125,8 +124,8 @@ metadata:
 spec:
   ports:
     # the port that this service should serve on
-  - port: 27017
-    targetPort: 27017
+    - port: 27017
+      targetPort: 27017
   selector:
     name: carts-db
 ---
@@ -148,41 +147,41 @@ spec:
         name: catalogue
     spec:
       containers:
-      - name: catalogue
-        image: weaveworksdemos/catalogue:0.3.5
-        command: ["/app"]
-        args:
-        - -port=80
-        resources:
-          limits:
-            cpu: 200m
-            memory: 200Mi
-          requests:
-            cpu: 100m
-            memory: 100Mi
-        ports:
-        - containerPort: 80
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 300
-          periodSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 180
-          periodSeconds: 3
+        - name: catalogue
+          image: weaveworksdemos/catalogue:0.3.5
+          command: ["/app"]
+          args:
+            - -port=80
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - containerPort: 80
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            capabilities:
+              drop:
+                - all
+              add:
+                - NET_BIND_SERVICE
+            readOnlyRootFilesystem: true
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 300
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 180
+            periodSeconds: 3
       nodeSelector:
         beta.kubernetes.io/os: linux
 ---
@@ -191,16 +190,15 @@ kind: Service
 metadata:
   name: catalogue
   annotations:
-        prometheus.io/scrape: 'true'
+    prometheus.io/scrape: "true"
   labels:
     name: catalogue
   namespace: sock-shop
 spec:
   ports:
-  - name: metrics
     # the port that this service should serve on
-  - port: 80
-    targetPort: 80
+    - port: 80
+      targetPort: 80
   selector:
     name: catalogue
 ---
@@ -222,16 +220,16 @@ spec:
         name: catalogue-db
     spec:
       containers:
-      - name: catalogue-db
-        image: weaveworksdemos/catalogue-db:0.3.0
-        env:
-          - name: MYSQL_ROOT_PASSWORD
-            value: fake_password
-          - name: MYSQL_DATABASE
-            value: socksdb
-        ports:
-        - name: mysql
-          containerPort: 3306
+        - name: catalogue-db
+          image: weaveworksdemos/catalogue-db:0.3.0
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: fake_password
+            - name: MYSQL_DATABASE
+              value: socksdb
+          ports:
+            - name: mysql
+              containerPort: 3306
       nodeSelector:
         beta.kubernetes.io/os: linux
 ---
@@ -245,8 +243,8 @@ metadata:
 spec:
   ports:
     # the port that this service should serve on
-  - port: 3306
-    targetPort: 3306
+    - port: 3306
+      targetPort: 3306
   selector:
     name: catalogue-db
 ---
@@ -266,39 +264,39 @@ spec:
         name: front-end
     spec:
       containers:
-      - name: front-end
-        image: weaveworksdemos/front-end:0.3.12
-        resources:
-          limits:
-            cpu: 300m
-            memory: 1000Mi
-          requests:
-            cpu: 100m
-            memory: 300Mi
-        ports:
-        - containerPort: 8079
-        env:
-        - name: SESSION_REDIS
-          value: "true"
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-          readOnlyRootFilesystem: true
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 8079
-          initialDelaySeconds: 300
-          periodSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 8079
-          initialDelaySeconds: 30
-          periodSeconds: 3
+        - name: front-end
+          image: weaveworksdemos/front-end:0.3.12
+          resources:
+            limits:
+              cpu: 300m
+              memory: 1000Mi
+            requests:
+              cpu: 100m
+              memory: 300Mi
+          ports:
+            - containerPort: 8079
+          env:
+            - name: SESSION_REDIS
+              value: "true"
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            capabilities:
+              drop:
+                - all
+            readOnlyRootFilesystem: true
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8079
+            initialDelaySeconds: 300
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8079
+            initialDelaySeconds: 30
+            periodSeconds: 3
       nodeSelector:
         beta.kubernetes.io/os: linux
 ---
@@ -307,17 +305,16 @@ kind: Service
 metadata:
   name: front-end
   annotations:
-        prometheus.io/scrape: 'true'
+    prometheus.io/scrape: "true"
   labels:
     name: front-end
   namespace: sock-shop
 spec:
   type: LoadBalancer
   ports:
-  - name: metrics
-  - port: 80
-    targetPort: 8079
-    nodePort: 30001
+    - port: 80
+      targetPort: 8079
+      nodePort: 30001
   selector:
     name: front-end
 ---
@@ -339,32 +336,32 @@ spec:
         name: orders
     spec:
       containers:
-      - name: orders
-        image: weaveworksdemos/orders:0.4.7
-        env:
-         - name: JAVA_OPTS
-           value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
-        resources:
-          limits:
-            cpu: 500m
-            memory: 500Mi
-          requests:
-            cpu: 100m
-            memory: 300Mi
-        ports:
-        - containerPort: 80
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
-        volumeMounts:
-        - mountPath: /tmp
-          name: tmp-volume
+        - name: orders
+          image: weaveworksdemos/orders:0.4.7
+          env:
+            - name: JAVA_OPTS
+              value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 300Mi
+          ports:
+            - containerPort: 80
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            capabilities:
+              drop:
+                - all
+              add:
+                - NET_BIND_SERVICE
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
       volumes:
         - name: tmp-volume
           emptyDir:
@@ -377,16 +374,15 @@ kind: Service
 metadata:
   name: orders
   annotations:
-        prometheus.io/scrape: 'true'
+    prometheus.io/scrape: "true"
   labels:
     name: orders
   namespace: sock-shop
 spec:
   ports:
-  - name: metrics
     # the port that this service should serve on
-  - port: 80
-    targetPort: 80
+    - port: 80
+      targetPort: 80
   selector:
     name: orders
 ---
@@ -408,23 +404,23 @@ spec:
         name: orders-db
     spec:
       containers:
-      - name: orders-db
-        image: mongo
-        ports:
-        - name: mongo
-          containerPort: 27017
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-          readOnlyRootFilesystem: true
-        volumeMounts:
-        - mountPath: /tmp
-          name: tmp-volume
+        - name: orders-db
+          image: mongo
+          ports:
+            - name: mongo
+              containerPort: 27017
+          securityContext:
+            capabilities:
+              drop:
+                - all
+              add:
+                - CHOWN
+                - SETGID
+                - SETUID
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
       volumes:
         - name: tmp-volume
           emptyDir:
@@ -442,8 +438,8 @@ metadata:
 spec:
   ports:
     # the port that this service should serve on
-  - port: 27017
-    targetPort: 27017
+    - port: 27017
+      targetPort: 27017
   selector:
     name: orders-db
 ---
@@ -465,38 +461,38 @@ spec:
         name: payment
     spec:
       containers:
-      - name: payment
-        image: weaveworksdemos/payment:0.4.3
-        resources:
-          limits:
-            cpu: 200m
-            memory: 200Mi
-          requests:
-            cpu: 99m
-            memory: 100Mi
-        ports:
-        - containerPort: 80
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 300
-          periodSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 180
-          periodSeconds: 3
+        - name: payment
+          image: weaveworksdemos/payment:0.4.3
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
+            requests:
+              cpu: 99m
+              memory: 100Mi
+          ports:
+            - containerPort: 80
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            capabilities:
+              drop:
+                - all
+              add:
+                - NET_BIND_SERVICE
+            readOnlyRootFilesystem: true
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 300
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 180
+            periodSeconds: 3
       nodeSelector:
         beta.kubernetes.io/os: linux
 ---
@@ -505,15 +501,15 @@ kind: Service
 metadata:
   name: payment
   annotations:
-        prometheus.io/scrape: 'true'
+    prometheus.io/scrape: "true"
   labels:
     name: payment
   namespace: sock-shop
 spec:
   ports:
     # the port that this service should serve on
-  - port: 80
-    targetPort: 80
+    - port: 80
+      targetPort: 80
   selector:
     name: payment
 ---
@@ -535,20 +531,20 @@ spec:
         name: queue-master
     spec:
       containers:
-      - name: queue-master
-        image: weaveworksdemos/queue-master:0.3.1
-        env:
-         - name: JAVA_OPTS
-           value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
-        resources:
-          limits:
-            cpu: 300m
-            memory: 500Mi
-          requests:
-            cpu: 100m
-            memory: 300Mi
-        ports:
-        - containerPort: 80
+        - name: queue-master
+          image: weaveworksdemos/queue-master:0.3.1
+          env:
+            - name: JAVA_OPTS
+              value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
+          resources:
+            limits:
+              cpu: 300m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 300Mi
+          ports:
+            - containerPort: 80
       nodeSelector:
         beta.kubernetes.io/os: linux
 ---
@@ -557,15 +553,15 @@ kind: Service
 metadata:
   name: queue-master
   annotations:
-        prometheus.io/scrape: 'true'
+    prometheus.io/scrape: "true"
   labels:
     name: queue-master
   namespace: sock-shop
 spec:
   ports:
     # the port that this service should serve on
-  - port: 80
-    targetPort: 80
+    - port: 80
+      targetPort: 80
   selector:
     name: queue-master
 ---
@@ -589,28 +585,28 @@ spec:
         prometheus.io/scrape: "false"
     spec:
       containers:
-      - name: rabbitmq
-        image: rabbitmq:3.6.8-management
-        ports:
-        - containerPort: 15672
-          name: management
-        - containerPort: 5672
-          name: rabbitmq
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-              - DAC_OVERRIDE
-          readOnlyRootFilesystem: true
-      - name: rabbitmq-exporter
-        image: kbudde/rabbitmq-exporter
-        ports:
-        - containerPort: 9090
-          name: exporter
+        - name: rabbitmq
+          image: rabbitmq:3.6.8-management
+          ports:
+            - containerPort: 15672
+              name: management
+            - containerPort: 5672
+              name: rabbitmq
+          securityContext:
+            capabilities:
+              drop:
+                - all
+              add:
+                - CHOWN
+                - SETGID
+                - SETUID
+                - DAC_OVERRIDE
+            readOnlyRootFilesystem: true
+        - name: rabbitmq-exporter
+          image: kbudde/rabbitmq-exporter
+          ports:
+            - containerPort: 9090
+              name: exporter
       nodeSelector:
         beta.kubernetes.io/os: linux
 ---
@@ -619,21 +615,21 @@ kind: Service
 metadata:
   name: rabbitmq
   annotations:
-        prometheus.io/scrape: 'true'
-        prometheus.io/port: '9090'
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"
   labels:
     name: rabbitmq
   namespace: sock-shop
 spec:
   ports:
     # the port that this service should serve on
-  - port: 5672
-    name: rabbitmq
-    targetPort: 5672
-  - port: 9090
-    name: exporter
-    targetPort: exporter
-    protocol: TCP
+    - port: 5672
+      name: rabbitmq
+      targetPort: 5672
+    - port: 9090
+      name: exporter
+      targetPort: exporter
+      protocol: TCP
   selector:
     name: rabbitmq
 ---
@@ -657,20 +653,20 @@ spec:
         prometheus.io.scrape: "false"
     spec:
       containers:
-      - name: session-db
-        image: redis:alpine
-        ports:
-        - name: redis
-          containerPort: 6379
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-          readOnlyRootFilesystem: true
+        - name: session-db
+          image: redis:alpine
+          ports:
+            - name: redis
+              containerPort: 6379
+          securityContext:
+            capabilities:
+              drop:
+                - all
+              add:
+                - CHOWN
+                - SETGID
+                - SETUID
+            readOnlyRootFilesystem: true
       nodeSelector:
         beta.kubernetes.io/os: linux
 ---
@@ -684,8 +680,8 @@ metadata:
 spec:
   ports:
     # the port that this service should serve on
-  - port: 6379
-    targetPort: 6379
+    - port: 6379
+      targetPort: 6379
   selector:
     name: session-db
 ---
@@ -707,34 +703,34 @@ spec:
         name: shipping
     spec:
       containers:
-      - name: shipping
-        image: weaveworksdemos/shipping:0.4.8
-        env:
-         - name: ZIPKIN
-           value: zipkin.jaeger.svc.cluster.local
-         - name: JAVA_OPTS
-           value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
-        resources:
-          limits:
-            cpu: 300m
-            memory: 500Mi
-          requests:
-            cpu: 100m
-            memory: 300Mi
-        ports:
-        - containerPort: 80
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
-        volumeMounts:
-        - mountPath: /tmp
-          name: tmp-volume
+        - name: shipping
+          image: weaveworksdemos/shipping:0.4.8
+          env:
+            - name: ZIPKIN
+              value: zipkin.jaeger.svc.cluster.local
+            - name: JAVA_OPTS
+              value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
+          resources:
+            limits:
+              cpu: 300m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 300Mi
+          ports:
+            - containerPort: 80
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            capabilities:
+              drop:
+                - all
+              add:
+                - NET_BIND_SERVICE
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
       volumes:
         - name: tmp-volume
           emptyDir:
@@ -747,16 +743,15 @@ kind: Service
 metadata:
   name: shipping
   annotations:
-        prometheus.io/scrape: 'true'
+    prometheus.io/scrape: "true"
   labels:
     name: shipping
   namespace: sock-shop
 spec:
   ports:
-  - name: metrics
     # the port that this service should serve on
-  - port: 80
-    targetPort: 80
+    - port: 80
+      targetPort: 80
   selector:
     name: shipping
 
@@ -779,41 +774,41 @@ spec:
         name: user
     spec:
       containers:
-      - name: user
-        image: weaveworksdemos/user:0.4.7
-        resources:
-          limits:
-            cpu: 300m
-            memory: 200Mi
-          requests:
-            cpu: 100m
-            memory: 100Mi
-        ports:
-        - containerPort: 80
-        env:
-        - name: mongo
-          value: user-db:27017
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 300
-          periodSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 180
-          periodSeconds: 3
+        - name: user
+          image: weaveworksdemos/user:0.4.7
+          resources:
+            limits:
+              cpu: 300m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - containerPort: 80
+          env:
+            - name: mongo
+              value: user-db:27017
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            capabilities:
+              drop:
+                - all
+              add:
+                - NET_BIND_SERVICE
+            readOnlyRootFilesystem: true
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 300
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 180
+            periodSeconds: 3
       nodeSelector:
         beta.kubernetes.io/os: linux
 ---
@@ -822,16 +817,15 @@ kind: Service
 metadata:
   name: user
   annotations:
-        prometheus.io/scrape: 'true'
+    prometheus.io/scrape: "true"
   labels:
     name: user
   namespace: sock-shop
 spec:
   ports:
-  - name: metrics
     # the port that this service should serve on
-  - port: 80
-    targetPort: 80
+    - port: 80
+      targetPort: 80
   selector:
     name: user
 
@@ -854,24 +848,24 @@ spec:
         name: user-db
     spec:
       containers:
-      - name: user-db
-        image: weaveworksdemos/user-db:0.3.0
+        - name: user-db
+          image: weaveworksdemos/user-db:0.3.0
 
-        ports:
-        - name: mongo
-          containerPort: 27017
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-          readOnlyRootFilesystem: true
-        volumeMounts:
-        - mountPath: /tmp
-          name: tmp-volume
+          ports:
+            - name: mongo
+              containerPort: 27017
+          securityContext:
+            capabilities:
+              drop:
+                - all
+              add:
+                - CHOWN
+                - SETGID
+                - SETUID
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
       volumes:
         - name: tmp-volume
           emptyDir:
@@ -889,7 +883,7 @@ metadata:
 spec:
   ports:
     # the port that this service should serve on
-  - port: 27017
-    targetPort: 27017
+    - port: 27017
+      targetPort: 27017
   selector:
     name: user-db
